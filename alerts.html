@@ -1,0 +1,45 @@
+{% extends "command_base.html" %}
+{% block title %}Alerts · مدار أمني{% endblock %}
+{% block content %}
+<article class="ops-card">
+  <div class="ops-card-head"><h2 data-i18n="alerts_title">التنبيهات</h2></div>
+  <form class="filter-bar" method="get" id="alert-filter">
+    <select name="severity" onchange="this.form.submit()">
+      <option value="">{{ 'Severity' }} / الخطورة</option>
+      <option value="critical" {% if request.args.get('severity')=='critical' %}selected{% endif %}>critical</option>
+      <option value="high" {% if request.args.get('severity')=='high' %}selected{% endif %}>high</option>
+      <option value="medium" {% if request.args.get('severity')=='medium' %}selected{% endif %}>medium</option>
+      <option value="low" {% if request.args.get('severity')=='low' %}selected{% endif %}>low</option>
+    </select>
+    <select name="status" onchange="this.form.submit()">
+      <option value="">Status / الحالة</option>
+      <option value="open" {% if request.args.get('status')=='open' %}selected{% endif %}>open</option>
+      <option value="acknowledged" {% if request.args.get('status')=='acknowledged' %}selected{% endif %}>acknowledged</option>
+      <option value="resolved" {% if request.args.get('status')=='resolved' %}selected{% endif %}>resolved</option>
+    </select>
+  </form>
+  {% for a in alerts %}
+  <div class="alert-item sev-{{ a.severity }}">
+    <div class="alert-ico">
+      {% if a.severity in ['critical','high'] %}<i class="fa-solid fa-triangle-exclamation"></i>
+      {% else %}<i class="fa-solid fa-circle-info"></i>{% endif %}
+    </div>
+    <div style="flex:1">
+      <strong>{{ a.title }}</strong>
+      <p>{{ a.threat_type }} · {{ '%.0f'|format(a.confidence * 100) }}% · {{ a.created_at }}</p>
+    </div>
+    <div class="alert-actions">
+      <span class="badge-pill {{ a.severity }}">{{ a.status }}</span>
+      {% if a.status == 'open' %}
+      <form method="post"><input type="hidden" name="alert_id" value="{{ a.id }}" /><input type="hidden" name="status" value="acknowledged" /><button class="btn tiny" data-i18n="acknowledge">استلام</button></form>
+      {% endif %}
+      {% if a.status not in ['resolved', 'dismissed'] %}
+      <form method="post"><input type="hidden" name="alert_id" value="{{ a.id }}" /><input type="hidden" name="status" value="resolved" /><button class="btn tiny" data-i18n="resolve">حل</button></form>
+      {% endif %}
+    </div>
+  </div>
+  {% else %}
+  <p data-i18n="no_data">لا توجد بيانات</p>
+  {% endfor %}
+</article>
+{% endblock %}

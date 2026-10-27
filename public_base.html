@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block body_class %}public{% endblock %}
+{% block body %}
+<header class="site-nav">
+  <a class="nav-brand" href="{{ url_for('auth.home') }}">
+    <span class="nav-orbit" aria-hidden="true"></span>
+    <strong data-i18n="brand">مدار أمني</strong>
+  </a>
+  <nav class="nav-links">
+    <a href="{{ url_for('auth.home') }}#about" data-i18n="home_about">عن النظام</a>
+    <a href="{{ url_for('auth.home') }}#features" data-i18n="home_features">المميزات</a>
+    <a href="{{ url_for('auth.home') }}#roles" data-i18n="home_roles">المستخدمون</a>
+    <div class="lang-switch">
+      <button type="button" class="lang-btn" data-set-lang="ar" data-i18n="lang_ar">العربية</button>
+      <button type="button" class="lang-btn" data-set-lang="en" data-i18n="lang_en">English</button>
+    </div>
+    {% if current_user.is_authenticated %}
+      {% if current_user.role == 'officer' %}
+        <a class="btn primary" href="{{ url_for('main.field_home') }}" data-i18n="nav_home">لوحة الميدان</a>
+      {% else %}
+        <a class="btn primary" href="{{ url_for('main.dashboard') }}" data-i18n="nav_home">غرفة العمليات</a>
+      {% endif %}
+    {% else %}
+      <a class="btn primary" href="{{ url_for('auth.login') }}" data-i18n="home_login">تسجيل الدخول</a>
+    {% endif %}
+  </nav>
+</header>
+{% block content %}{% endblock %}
+<footer class="site-footer">
+  <div>
+    <strong data-i18n="brand">مدار أمني</strong>
+    <p>Madar Amney · Integrated Smart Operations Management System</p>
+  </div>
+  <p data-i18n="footer_uni">جامعة حائل · كلية علوم وهندسة الحاسب الآلي</p>
+</footer>
+{% endblock %}

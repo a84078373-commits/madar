@@ -1,0 +1,26 @@
+{% extends "command_base.html" %}
+{% block title %}Reports · مدار أمني{% endblock %}
+{% block content %}
+<section class="kpi-row">
+  <article class="kpi-card"><div><span class="kpi-label" data-i18n="kpi_cameras">كاميرات</span><strong class="kpi-value">{{ stats.online_cameras }}/{{ stats.total_cameras }}</strong></div></article>
+  <article class="kpi-card"><div><span class="kpi-label" data-i18n="kpi_incidents">تنبيهات</span><strong class="kpi-value">{{ stats.open_alerts }}</strong></div></article>
+  <article class="kpi-card"><div><span class="kpi-label" data-i18n="kpi_personnel">ضباط</span><strong class="kpi-value">{{ stats.active_officers }}</strong></div></article>
+  <article class="kpi-card"><div><span class="kpi-label" data-i18n="kpi_sites">مواقع</span><strong class="kpi-value">{{ stats.vital_locations }}</strong></div></article>
+</section>
+<article class="ops-card">
+  <div class="ops-card-head">
+    <h2 data-i18n="readiness_report">تقرير الجاهزية التشغيلية</h2>
+    <div class="row-actions">
+      <button class="btn tiny" type="button" onclick="window.print()" data-i18n="print_report">طباعة</button>
+      <a class="btn tiny primary" href="{{ url_for('main.reports_csv') }}" data-i18n="export_csv">تصدير CSV</a>
+    </div>
+  </div>
+  <ul class="report-list">
+    <li>Online cameras: {{ stats.online_cameras }} / {{ stats.total_cameras }}</li>
+    <li>Open alerts: {{ stats.open_alerts }}</li>
+    <li>Critical alerts: {{ stats.critical_alerts }}</li>
+    <li>Active streams: {{ stats.active_streams }}</li>
+    <li>Vital sites: {{ stats.vital_locations }}</li>
+  </ul>
+</article>
+{% endblock %}

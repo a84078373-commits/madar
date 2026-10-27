@@ -1,0 +1,48 @@
+{% extends "public_base.html" %}
+{% block title %}Login · مدار أمني{% endblock %}
+{% block content %}
+<section class="login-page">
+  <div class="login-panel">
+    <div class="login-intro">
+      <p class="brand-hero sm" data-i18n="brand">مدار أمني</p>
+      <h1 data-i18n="login_title">دخول المنصة</h1>
+      <p class="muted" data-i18n="login_sub">ادخل بحسابك حسب دورك.</p>
+      <ul class="login-points">
+        <li data-i18n="point_1">غرفة قيادة وخريطة GIS</li>
+        <li data-i18n="point_2">تنبيهات الذكاء الاصطناعي</li>
+        <li data-i18n="point_3">تنسيق ميداني مشفّر</li>
+      </ul>
+    </div>
+
+    <form class="login-card" method="post">
+      <h2 data-i18n="home_login">تسجيل الدخول</h2>
+      <label><span data-i18n="email">البريد الإلكتروني</span>
+        <input type="email" name="email" required autocomplete="username" />
+      </label>
+      <label><span data-i18n="password">كلمة المرور</span>
+        <input type="password" name="password" required autocomplete="current-password" />
+      </label>
+      <button class="btn primary lg" type="submit" data-i18n="login_now">دخول الآن</button>
+
+      <div class="demo-accounts">
+        <p class="muted" data-i18n="demo_accounts">حسابات تجريبية للعرض:</p>
+        <button type="button" class="demo-btn" data-email="admin@madaramney.sa">Admin</button>
+        <button type="button" class="demo-btn" data-email="manager@madaramney.sa">Manager</button>
+        <button type="button" class="demo-btn" data-email="officer1@madaramney.sa">Officer</button>
+      </div>
+      <a class="back-home" href="{{ url_for('auth.home') }}" data-i18n="back_home">العودة للصفحة الرئيسية</a>
+    </form>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script>
+  document.querySelectorAll(".demo-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.querySelector('input[name="email"]').value = btn.dataset.email;
+      document.querySelector('input[name="password"]').value = "";
+      document.querySelector('input[name="password"]').focus();
+    });
+  });
+</script>
+{% endblock %}

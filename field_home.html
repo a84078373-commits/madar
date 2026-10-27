@@ -1,0 +1,25 @@
+{% extends "field_base.html" %}
+{% block title %}الميدان · مدار أمني{% endblock %}
+{% block content %}
+<section class="panel">
+  <h2>واجهة الضابط الميداني (Web)</h2>
+  <p class="muted">مطابقة للبحث النظري: Mobile Interface عبر المتصفح — بدون تطبيق منفصل</p>
+  <div class="stat-strip compact">
+    <div class="stat"><span>تنبيهات</span><strong>{{ stats.open_alerts }}</strong></div>
+    <div class="stat"><span>بث نشط</span><strong>{{ stats.active_streams }}</strong></div>
+    <div class="stat red"><span>مناطق حمراء</span><strong>{{ stats.zones_red }}</strong></div>
+  </div>
+</section>
+<section class="panel">
+  <h2>أحدث مهامي</h2>
+  {% for t in tasks %}
+  <article class="task-row"><div><strong>{{ t.title }}</strong><p>{{ t.status }} · {{ t.priority }}</p></div></article>
+  {% else %}<p class="muted">لا توجد مهام</p>{% endfor %}
+</section>
+<section class="panel">
+  <h2>تنبيهات نشطة</h2>
+  {% for a in alerts %}
+  <article class="alert-row sev-{{ a.severity }}"><div><strong>{{ a.title }}</strong><p>{{ a.severity }}</p></div></article>
+  {% else %}<p class="muted">لا توجد تنبيهات</p>{% endfor %}
+</section>
+{% endblock %}

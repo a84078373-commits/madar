@@ -1,0 +1,69 @@
+{% extends "command_base.html" %}
+{% block title %}Cameras · مدار أمني{% endblock %}
+{% block content %}
+<article class="ops-card">
+  <div class="ops-card-head">
+    <h2 data-i18n="cameras_title">الكاميرات</h2>
+  </div>
+
+  <form class="filter-bar" method="get">
+    <input name="q" value="{{ q or '' }}" data-i18n-placeholder="search_ph" placeholder="Search..." />
+    <select name="status" onchange="this.form.submit()">
+      <option value="all" {% if status=='all' %}selected{% endif %} data-i18n="filter_all">الكل</option>
+      <option value="online" {% if status=='online' %}selected{% endif %} data-i18n="filter_online">متصل</option>
+      <option value="offline" {% if status=='offline' %}selected{% endif %} data-i18n="filter_offline">غير متصل</option>
+    </select>
+    <button class="btn primary" type="submit" data-i18n="nav_cameras">تصفية</button>
+  </form>
+
+  <details class="ops-details">
+    <summary class="btn primary" data-i18n="add_camera">إضافة كاميرا</summary>
+    <form method="post" class="form-grid" style="margin-top:0.8rem">
+      <input type="hidden" name="action" value="create" />
+      <input name="name" data-i18n-placeholder="name" placeholder="Name" required />
+      <input name="code" data-i18n-placeholder="code" placeholder="Code" required />
+      <input name="description" data-i18n-placeholder="description" placeholder="Description" />
+      <input name="lat" data-i18n-placeholder="lat" placeholder="Latitude" value="27.5114" />
+      <input name="lng" data-i18n-placeholder="lng" placeholder="Longitude" value="41.7208" />
+      <button class="btn primary" type="submit" data-i18n="save">حفظ</button>
+    </form>
+  </details>
+
+  <div class="live-grid" style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); margin-top:1rem">
+    {% for c in cameras %}
+    <div class="live-tile {% if c.is_online %}on{% else %}off{% endif %}">
+      <span class="live-tag">
+        {% if c.is_online %}<i class="fa-solid fa-circle"></i> <span data-i18n="live">مباشر</span>
+        {% else %}<span data-i18n="offline">غير متصل</span>{% endif %}
+      </span>
+      <div class="live-visual"><i class="fa-solid fa-video"></i></div>
+      <strong>{{ c.name }}</strong>
+      <small>{{ c.code }}</small>
+      <div class="row-actions">
+        <form method="post"><input type="hidden" name="camera_id" value="{{ c.id }}" /><input type="hidden" name="action" value="toggle" /><button class="btn tiny" type="submit" data-i18n="toggle">Toggle</button></form>
+        <form method="post"><input type="hidden" name="camera_id" value="{{ c.id }}" /><input type="hidden" name="action" value="ai" /><button class="btn tiny" type="submit" data-i18n="ai_analyze">AI</button></form>
+        <form method="post" onsubmit="return confirm(window.MadarI18n ? MadarI18n.t('confirm_delete') : 'Delete?')">
+          <input type="hidden" name="camera_id" value="{{ c.id }}" />
+          <input type="hidden" name="action" value="delete" />
+          <button class="btn tiny danger" type="submit" data-i18n="delete">حذف</button>
+        </form>
+      </div>
+      <details>
+        <summary data-i18n="edit">تعديل</summary>
+        <form method="post" class="form-grid" style="margin-top:.5rem">
+          <input type="hidden" name="action" value="update" />
+          <input type="hidden" name="camera_id" value="{{ c.id }}" />
+          <input name="name" value="{{ c.name }}" />
+          <input name="description" value="{{ c.description or '' }}" />
+          <input name="lat" value="{{ c.lat }}" />
+          <input name="lng" value="{{ c.lng }}" />
+          <button class="btn tiny primary" type="submit" data-i18n="save">حفظ</button>
+        </form>
+      </details>
+    </div>
+    {% else %}
+    <p data-i18n="no_data">لا توجد بيانات</p>
+    {% endfor %}
+  </div>
+</article>
+{% endblock %}

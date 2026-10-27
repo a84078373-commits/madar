@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block body_class %}field{% endblock %}
+{% block body %}
+<div class="field-app">
+  <header class="field-top">
+    <div>
+          <a class="brand small" href="{{ url_for('auth.home') }}">مدار أمني</a>
+      <h1>{{ current_user.name }}</h1>
+      <p class="muted">Mobile Interface · Web · {{ current_user.badge_code }}</p>
+    </div>
+    <a class="btn ghost" href="{{ url_for('auth.logout') }}">خروج</a>
+  </header>
+  <main class="field-main">{% block content %}{% endblock %}</main>
+  <nav class="field-tabs">
+    <a href="{{ url_for('main.field_home') }}" class="{% if request.endpoint == 'main.field_home' %}active{% endif %}">الرئيسية</a>
+    <a href="{{ url_for('main.field_stream') }}" class="{% if request.endpoint == 'main.field_stream' %}active{% endif %}">البث</a>
+    <a href="{{ url_for('main.field_map') }}" class="{% if request.endpoint == 'main.field_map' %}active{% endif %}">الخريطة</a>
+    <a href="{{ url_for('main.field_alerts') }}" class="{% if request.endpoint == 'main.field_alerts' %}active{% endif %}">تنبيهات</a>
+    <a href="{{ url_for('main.field_tasks') }}" class="{% if request.endpoint == 'main.field_tasks' %}active{% endif %}">مهامي</a>
+    <a href="{{ url_for('main.field_chat') }}" class="{% if request.endpoint == 'main.field_chat' %}active{% endif %}">تواصل</a>
+  </nav>
+</div>
+{% endblock %}

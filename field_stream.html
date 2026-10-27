@@ -1,0 +1,30 @@
+{% extends "field_base.html" %}
+{% block title %}البث · مدار أمني{% endblock %}
+{% block content %}
+<section class="panel">
+  <h2>Live Stream Initiation</h2>
+  <p class="muted">{% if active %}البث نشط · Session {{ active.session_token }}{% else %}جاهز لبدء البث{% endif %}</p>
+  <div class="feed-window {% if active %}online{% else %}offline{% endif %}">
+    <p>{% if active %}● LIVE FIELD CHANNEL{% else %}● IDLE{% endif %}</p>
+  </div>
+  <form method="post" class="form-grid">
+    <select name="camera_id">
+      {% for c in cameras %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}
+    </select>
+    {% if not active %}
+    <input type="hidden" name="action" value="start" />
+    <button class="btn primary" type="submit">بدء البث المباشر</button>
+    {% else %}
+    <input type="hidden" name="action" value="stop" />
+    <button class="btn danger" type="submit">إيقاف البث</button>
+    {% endif %}
+  </form>
+  <form method="post" class="form-grid" style="margin-top:0.8rem">
+    <input type="hidden" name="action" value="ai" />
+    <select name="camera_id">
+      {% for c in cameras %}<option value="{{ c.id }}">{{ c.name }}</option>{% endfor %}
+    </select>
+    <button class="btn ghost" type="submit">إرسال تحليل AI لغرفة العمليات</button>
+  </form>
+</section>
+{% endblock %}

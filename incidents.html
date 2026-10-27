@@ -1,0 +1,19 @@
+{% extends "command_base.html" %}
+{% block title %}Incidents · مدار أمني{% endblock %}
+{% block content %}
+<article class="ops-card">
+  <div class="ops-card-head"><h2 data-i18n="incidents_title">الحوادث الأمنية</h2></div>
+  {% for a in incidents %}
+  <div class="alert-item sev-{{ a.severity }}">
+    <div class="alert-ico"><i class="fa-solid fa-triangle-exclamation"></i></div>
+    <div>
+      <strong>{{ a.title }}</strong>
+      <p>{{ a.description or a.threat_type }} · {{ a.status }} · {{ a.created_at }}</p>
+    </div>
+    <span class="badge-pill {{ a.severity }}">{{ a.severity }}</span>
+  </div>
+  {% else %}
+  <p class="muted" data-i18n="no_incidents">لا توجد حوادث عالية الخطورة حالياً</p>
+  {% endfor %}
+</article>
+{% endblock %}

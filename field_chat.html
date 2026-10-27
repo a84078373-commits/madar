@@ -1,0 +1,19 @@
+{% extends "field_base.html" %}
+{% block title %}تواصل · مدار أمني{% endblock %}
+{% block content %}
+<section class="panel">
+  <h2>التواصل المشفّر مع القيادة</h2>
+  <div class="chat-list">
+    {% for m in messages %}
+    <div class="chat-bubble">
+      <span>{{ m.sender.name if m.sender else m.sender_id }}</span>
+      <p>{{ m.content }}</p>
+    </div>
+    {% endfor %}
+  </div>
+  <form class="chat-compose" method="post">
+    <input name="content" placeholder="رسالة للقيادة..." required />
+    <button class="btn primary" type="submit">إرسال</button>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "field_base.html" %}
+{% block title %}مهامي · مدار أمني{% endblock %}
+{% block content %}
+<section class="panel">
+  <h2>مهامي الميدانية</h2>
+  {% for t in tasks %}
+  <article class="task-row">
+    <div>
+      <strong>{{ t.title }}</strong>
+      <p>{{ t.description or '' }}</p>
+    </div>
+    <form method="post">
+      <input type="hidden" name="action" value="update" />
+      <input type="hidden" name="task_id" value="{{ t.id }}" />
+      <select name="status" onchange="this.form.submit()">
+        <option value="pending" {% if t.status=='pending' %}selected{% endif %}>pending</option>
+        <option value="in_progress" {% if t.status=='in_progress' %}selected{% endif %}>in_progress</option>
+        <option value="completed" {% if t.status=='completed' %}selected{% endif %}>completed</option>
+      </select>
+    </form>
+  </article>
+  {% else %}<p class="muted">لا توجد مهام</p>{% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "command_base.html" %}
+{% block title %}Personnel · مدار أمني{% endblock %}
+{% block content %}
+<article class="ops-card">
+  <div class="ops-card-head"><h2 data-i18n="personnel_title">أفراد الأمن</h2></div>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th data-i18n="name">الاسم</th>
+        <th data-i18n="email">البريد</th>
+        <th data-i18n="role">الدور</th>
+        <th data-i18n="badge">الشارة</th>
+        <th data-i18n="status">الحالة</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.name }}</td>
+        <td>{{ u.email }}</td>
+        <td><span class="badge" data-role-label="{{ u.role }}">{{ u.role }}</span></td>
+        <td>{{ u.badge_code }}</td>
+        <td>{% if u.is_active %}<span data-i18n="active">نشط</span>{% else %}<span data-i18n="disabled">معطّل</span>{% endif %}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</article>
+{% endblock %}

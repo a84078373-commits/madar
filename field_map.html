@@ -1,0 +1,18 @@
+{% extends "field_base.html" %}
+{% block title %}الخريطة · مدار أمني{% endblock %}
+{% block content %}
+<section class="panel map-panel">
+  <h2>Simplified Navigation Map</h2>
+  <div id="ops-map" class="ops-map"
+    data-cameras='[{% for c in cameras %}{"id":{{c.id}},"name":{{c.name|tojson}},"lat":{{c.lat}},"lng":{{c.lng}},"online":{% if c.is_online %}true{% else %}false{% endif %},"zone":{{c.zone_status|tojson}}}{% if not loop.last %},{% endif %}{% endfor %}]'
+    data-zones='[{% for z in zones %}{"name":{{z.name|tojson}},"lat":{{z.lat}},"lng":{{z.lng}},"radius":{{z.radius_m}},"color":{{z.color|tojson}}}{% if not loop.last %},{% endif %}{% endfor %}]'
+    data-alerts='[{% for a in alerts if a.lat and a.lng %}{"title":{{a.title|tojson}},"lat":{{a.lat}},"lng":{{a.lng}},"severity":{{a.severity|tojson}}}{% if not loop.last %},{% endif %}{% endfor %}]'
+    data-officers='[{% for o in officers if o.last_lat and o.last_lng %}{"name":{{o.name|tojson}},"lat":{{o.last_lat}},"lng":{{o.last_lng}},"badge":{{o.badge_code|tojson}}}{% if not loop.last %},{% endif %}{% endfor %}]'
+  ></div>
+  <form method="post" class="form-grid" style="margin-top:0.8rem">
+    <input name="lat" placeholder="Latitude" value="{{ current_user.last_lat or 27.5114 }}" required />
+    <input name="lng" placeholder="Longitude" value="{{ current_user.last_lng or 41.7208 }}" required />
+    <button class="btn primary" type="submit">تحديث موقعي</button>
+  </form>
+</section>
+{% endblock %}

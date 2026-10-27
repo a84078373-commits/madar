@@ -1,0 +1,185 @@
+{% extends "command_base.html" %}
+{% block title %}Dashboard · مدار أمني{% endblock %}
+{% block content %}
+<section class="kpi-row">
+  <article class="kpi-card">
+    <div>
+      <span class="kpi-label" data-i18n="kpi_sites">المواقع الحيوية</span>
+      <strong class="kpi-value">{{ stats.vital_locations }}</strong>
+      <p class="kpi-meta ok"><i class="fa-solid fa-circle"></i> <span data-i18n="kpi_sites_status">محمية</span></p>
+    </div>
+    <div class="kpi-icon teal"><i class="fa-solid fa-location-dot"></i></div>
+  </article>
+  <article class="kpi-card">
+    <div>
+      <span class="kpi-label" data-i18n="kpi_personnel">أفراد الأمن في الميدان</span>
+      <strong class="kpi-value">{{ stats.active_officers }}</strong>
+      <p class="kpi-meta info"><i class="fa-solid fa-circle"></i> <span data-i18n="kpi_personnel_status">في الخدمة</span></p>
+    </div>
+    <div class="kpi-icon blue"><i class="fa-solid fa-user-shield"></i></div>
+  </article>
+  <article class="kpi-card">
+    <div>
+      <span class="kpi-label" data-i18n="kpi_incidents">الحوادث الحالية</span>
+      <strong class="kpi-value">{{ stats.open_alerts }}</strong>
+      <p class="kpi-meta danger"><i class="fa-solid fa-circle"></i> <span data-i18n="kpi_incidents_status">تحتاج مراجعة</span></p>
+    </div>
+    <div class="kpi-icon red"><i class="fa-solid fa-triangle-exclamation"></i></div>
+  </article>
+  <article class="kpi-card">
+    <div>
+      <span class="kpi-label" data-i18n="kpi_cameras">الكاميرات النشطة</span>
+      <strong class="kpi-value">{{ stats.online_cameras }} / {{ stats.total_cameras }}</strong>
+      <p class="kpi-meta ok"><i class="fa-solid fa-circle"></i> <span data-i18n="kpi_cameras_status">متصلة</span></p>
+    </div>
+    <div class="kpi-icon blue"><i class="fa-solid fa-video"></i></div>
+  </article>
+</section>
+
+<section class="dash-mid">
+  <article class="ops-card map-card">
+    <div class="ops-card-head">
+      <h2 data-i18n="map_title">الخريطة التفاعلية</h2>
+      <div class="map-legend">
+        <span><i class="dot green"></i><span data-i18n="legend_camera">كاميرا</span></span>
+        <span><i class="dot red"></i><span data-i18n="legend_incident">حادثة</span></span>
+        <span><i class="dot blue"></i><span data-i18n="legend_patrol">دورية</span></span>
+        <span><i class="dot amber"></i><span data-i18n="legend_site">موقع حيوي</span></span>
+      </div>
+    </div>
+    <div id="ops-map" class="ops-map"
+      data-cameras='{{ cameras_json|safe }}'
+      data-zones='{{ zones_json|safe }}'
+      data-alerts='{{ alerts_json|safe }}'
+      data-officers='{{ officers_json|safe }}'
+    ></div>
+    <p class="demo-note" data-i18n="map_demo_note">بيانات توضيحية للمواقع (ليست تشغيلية حية)</p>
+  </article>
+
+  <article class="ops-card feeds-card">
+    <div class="ops-card-head">
+      <h2 data-i18n="live_feeds">البث المباشر للكاميرات</h2>
+    </div>
+    <div class="live-grid">
+      {% for c in cameras[:4] %}
+      <div class="live-tile {% if c.is_online %}on{% else %}off{% endif %}">
+        <span class="live-tag">
+          {% if c.is_online %}<i class="fa-solid fa-circle"></i> <span data-i18n="live">مباشر</span>
+          {% else %}<span data-i18n="offline">غير متصل</span>{% endif %}
+        </span>
+        <div class="live-visual"><i class="fa-solid fa-video"></i></div>
+        <strong>{{ c.name }}</strong>
+      </div>
+      {% endfor %}
+    </div>
+  </article>
+</section>
+
+<section class="dash-bottom">
+  <article class="ops-card">
+    <div class="ops-card-head">
+      <h2 data-i18n="recent_alerts">آخر التنبيهات</h2>
+      <a href="{{ url_for('main.alerts') }}" data-i18n="view_all">عرض الكل</a>
+    </div>
+    <div class="alert-feed">
+      {% for a in recent_alerts %}
+      <div class="alert-item sev-{{ a.severity }}">
+        <div class="alert-ico">
+          {% if a.severity in ['critical','high'] %}<i class="fa-solid fa-triangle-exclamation"></i>
+          {% else %}<i class="fa-solid fa-circle-info"></i>{% endif %}
+        </div>
+        <div>
+          <strong>{{ a.title }}</strong>
+          <p>{{ a.created_at.strftime('%H:%M') if a.created_at else '' }} · {{ a.threat_type }} · {{ a.status }}</p>
+        </div>
+      </div>
+      {% else %}
+      <p class="muted" data-i18n="no_data">لا توجد بيانات</p>
+      {% endfor %}
+    </div>
+  </article>
+
+  <article class="ops-card">
+    <div class="ops-card-head">
+      <h2 data-i18n="risk_title">مخطط المخاطر - الذكاء الاصطناعي</h2>
+    </div>
+    <div class="risk-wrap">
+      <canvas id="riskLine" height="120"></canvas>
+      <div class="risk-gauge">
+        <canvas id="riskDonut" width="120" height="120"></canvas>
+        <div class="risk-center">
+          <strong>{{ risk_level }}%</strong>
+          <span data-i18n="risk_level">مستوى الخطر</span>
+        </div>
+      </div>
+    </div>
+    <p class="demo-note" data-i18n="sample_chart">مخطط مبني على بيانات النظام الحالية</p>
+  </article>
+
+  <article class="ops-card">
+    <div class="ops-card-head">
+      <h2 data-i18n="today_events">أحداث اليوم</h2>
+    </div>
+    <div class="timeline">
+      {% for e in events %}
+      <div class="timeline-item {{ e.tone }}">
+        <i class="fa-solid {{ e.icon }}"></i>
+        <div>
+          <strong>{{ e.title }}</strong>
+          <p>{{ e.time }}</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </article>
+</section>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+(() => {
+  const risk = {{ risk_level }};
+  let lineChart, donutChart;
+
+  function labels() {
+    const t = window.MadarI18n ? window.MadarI18n.t : (k) => k;
+    return [t("yesterday"), t("today"), t("now")];
+  }
+
+  function build() {
+    const line = document.getElementById("riskLine");
+    const donut = document.getElementById("riskDonut");
+    if (lineChart) lineChart.destroy();
+    if (donutChart) donutChart.destroy();
+    if (line) {
+      lineChart = new Chart(line, {
+        type: "line",
+        data: {
+          labels: labels(),
+          datasets: [{
+            data: [Math.max(10, risk - 18), Math.max(15, risk - 6), risk],
+            borderColor: "#2563EB",
+            backgroundColor: "rgba(37,99,235,.12)",
+            fill: true, tension: 0.35, pointRadius: 4, pointBackgroundColor: "#2563EB"
+          }]
+        },
+        options: {
+          plugins: { legend: { display: false } },
+          scales: { x: { grid: { display: false } }, y: { beginAtZero: true, max: 100, ticks: { stepSize: 25 } } }
+        }
+      });
+    }
+    if (donut) {
+      donutChart = new Chart(donut, {
+        type: "doughnut",
+        data: { datasets: [{ data: [risk, 100 - risk], backgroundColor: ["#EF4444", "#E5E7EB"], borderWidth: 0 }] },
+        options: { cutout: "72%", plugins: { legend: { display: false }, tooltip: { enabled: false } } }
+      });
+    }
+  }
+  build();
+  window.addEventListener("madar:langchange", build);
+})();
+</script>
+{% endblock %}

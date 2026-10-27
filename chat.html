@@ -1,0 +1,19 @@
+{% extends "command_base.html" %}
+{% block title %}التواصل · مدار أمني{% endblock %}
+{% block content %}
+<article class="ops-card">
+  <div class="ops-card-head"><h2>التواصل المشفّر</h2></div>
+  <div class="chat-list">
+    {% for m in messages %}
+    <div class="chat-bubble">
+      <span>{{ m.sender.name if m.sender else m.sender_id }} · Encrypted</span>
+      <p>{{ m.content }}</p>
+    </div>
+    {% endfor %}
+  </div>
+  <form class="chat-compose" method="post">
+    <input name="content" placeholder="أرسل تعليمات للضباط..." required />
+    <button class="btn primary" type="submit">إرسال</button>
+  </form>
+</article>
+{% endblock %}

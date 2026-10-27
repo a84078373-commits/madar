@@ -1,0 +1,15 @@
+{% extends "field_base.html" %}
+{% block title %}تنبيهات الميدان · مدار أمني{% endblock %}
+{% block content %}
+<section class="panel">
+  <h2>التنبيهات النشطة</h2>
+  {% for a in alerts %}
+  <article class="alert-row sev-{{ a.severity }}">
+    <div>
+      <strong>{{ a.title }}</strong>
+      <p>{{ a.threat_type }} · {{ a.severity }} · {{ '%.0f'|format(a.confidence * 100) }}%</p>
+    </div>
+  </article>
+  {% else %}<p class="muted">لا توجد تنبيهات</p>{% endfor %}
+</section>
+{% endblock %}

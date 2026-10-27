@@ -1,0 +1,40 @@
+{% extends "command_base.html" %}
+{% block title %}المناطق · مدار أمني{% endblock %}
+{% block content %}
+<div class="page">
+  <header class="page-head">
+    <div>
+      <h1>حالة المناطق</h1>
+      <p class="muted">Zone Status Control</p>
+    </div>
+  </header>
+  <div class="split-2">
+    <section class="panel map-panel">
+      <div id="ops-map" class="ops-map"
+        data-cameras='[{% for c in cameras %}{"id":{{c.id}},"name":{{c.name|tojson}},"lat":{{c.lat}},"lng":{{c.lng}},"online":{% if c.is_online %}true{% else %}false{% endif %},"zone":{{c.zone_status|tojson}}}{% if not loop.last %},{% endif %}{% endfor %}]'
+        data-zones='[{% for z in zones %}{"name":{{z.name|tojson}},"lat":{{z.lat}},"lng":{{z.lng}},"radius":{{z.radius_m}},"color":{{z.color|tojson}}}{% if not loop.last %},{% endif %}{% endfor %}]'
+        data-alerts='[]'
+        data-officers='[]'
+      ></div>
+    </section>
+    <section class="panel">
+      {% for z in zones %}
+      <form method="post" class="zone-row">
+        <span class="zone-pill {{ z.color }}">{{ z.color }}</span>
+        <div>
+          <strong>{{ z.name }}</strong>
+          <input type="hidden" name="zone_id" value="{{ z.id }}" />
+          <input name="notes" value="{{ z.notes or '' }}" placeholder="ملاحظات" />
+        </div>
+        <select name="color">
+          <option value="green" {% if z.color=='green' %}selected{% endif %}>green</option>
+          <option value="amber" {% if z.color=='amber' %}selected{% endif %}>amber</option>
+          <option value="red" {% if z.color=='red' %}selected{% endif %}>red</option>
+        </select>
+        <button class="btn tiny" type="submit">حفظ</button>
+      </form>
+      {% endfor %}
+    </section>
+  </div>
+</div>
+{% endblock %}

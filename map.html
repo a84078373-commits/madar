@@ -1,0 +1,32 @@
+{% extends "command_base.html" %}
+{% block title %}Map · مدار أمني{% endblock %}
+{% block content %}
+<article class="ops-card map-page-card">
+  <div class="ops-card-head">
+    <div>
+      <h2 data-i18n="map_title">الخريطة التفاعلية</h2>
+      <p class="demo-note" style="margin:0.25rem 0 0" data-i18n="map_demo_note">مواقع توضيحية حول مدينة حائل على خريطة أقمار صناعية حقيقية</p>
+    </div>
+    <div class="map-toolbar">
+      <button type="button" class="map-filter-btn active" data-map-filter="cameras"><i class="dot green"></i><span data-i18n="legend_camera">كاميرا</span></button>
+      <button type="button" class="map-filter-btn active" data-map-filter="incidents"><i class="dot red"></i><span data-i18n="legend_incident">حادثة</span></button>
+      <button type="button" class="map-filter-btn active" data-map-filter="patrols"><i class="dot blue"></i><span data-i18n="legend_patrol">دورية</span></button>
+      <button type="button" class="map-filter-btn active" data-map-filter="sites"><i class="dot amber"></i><span data-i18n="legend_site">موقع حيوي</span></button>
+    </div>
+  </div>
+
+  <div class="map-stats">
+    <span><b>{{ cameras|length }}</b> <span data-i18n="nav_cameras">كاميرات</span></span>
+    <span><b>{{ alerts|length }}</b> <span data-i18n="nav_incidents">حوادث</span></span>
+    <span><b>{{ officers|length }}</b> <span data-i18n="nav_personnel">دورية</span></span>
+    <span><b>{{ zones|length }}</b> <span data-i18n="kpi_sites">مواقع</span></span>
+  </div>
+
+  <div id="ops-map" class="ops-map tall" data-map-mode="full"
+    data-cameras='{{ cameras_json|safe }}'
+    data-zones='{{ zones_json|safe }}'
+    data-alerts='{{ alerts_json|safe }}'
+    data-officers='{{ officers_json|safe }}'
+  ></div>
+</article>
+{% endblock %}

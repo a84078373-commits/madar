@@ -1,0 +1,21 @@
+{% extends "command_base.html" %}
+{% block title %}Settings · مدار أمني{% endblock %}
+{% block content %}
+<article class="ops-card">
+  <div class="ops-card-head"><h2 data-i18n="settings_title">إعدادات النظام</h2></div>
+  <div class="settings-grid">
+    <label><span data-i18n="lang_pref">تفضيل اللغة</span>
+      <div class="lang-switch" style="margin-top:.4rem;width:fit-content">
+        <button type="button" class="lang-btn" data-set-lang="ar" data-i18n="lang_ar">العربية</button>
+        <button type="button" class="lang-btn" data-set-lang="en" data-i18n="lang_en">English</button>
+      </div>
+    </label>
+    <label><span data-i18n="profile">الملف الشخصي</span>
+      <input value="{{ current_user.name }} · {{ current_user.email }}" readonly />
+    </label>
+  </div>
+  <form method="post" action="{{ url_for('main.ai_simulate') }}" style="margin-top:1rem">
+    <button class="btn primary" type="submit" data-i18n="simulate_ai">محاكاة تنبيه AI</button>
+  </form>
+</article>
+{% endblock %}

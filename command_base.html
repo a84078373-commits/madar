@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block body_class %}ops-body{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+{% endblock %}
+{% block body %}
+{% set open_alerts = alerts_count|default(0) %}
+<div class="ops-shell">
+  <aside class="ops-sidebar">
+    <a class="ops-logo" href="{{ url_for('main.dashboard') }}">
+      <span class="ops-logo-icon"><i class="fa-solid fa-shield-halved"></i></span>
+      <span>
+        <strong data-i18n="brand">مدار أمني</strong>
+        <small data-i18n="brand_en">Madar Amney</small>
+      </span>
+    </a>
+
+    <nav class="ops-nav">
+      <a href="{{ url_for('main.dashboard') }}" class="{% if request.endpoint == 'main.dashboard' %}active{% endif %}">
+        <i class="fa-solid fa-house"></i><span data-i18n="nav_home">الرئيسية</span>
+      </a>
+      <a href="{{ url_for('main.cameras') }}" class="{% if request.endpoint == 'main.cameras' %}active{% endif %}">
+        <i class="fa-solid fa-video"></i><span data-i18n="nav_cameras">الكاميرات</span>
+      </a>
+      <a href="{{ url_for('main.map_view') }}" class="{% if request.endpoint == 'main.map_view' %}active{% endif %}">
+        <i class="fa-solid fa-map-location-dot"></i><span data-i18n="nav_map">الخريطة</span>
+      </a>
+      <a href="{{ url_for('main.alerts') }}" class="{% if request.endpoint == 'main.alerts' %}active{% endif %}">
+        <i class="fa-solid fa-bell"></i><span data-i18n="nav_alerts">التنبيهات</span>
+        {% if open_alerts %}<em class="nav-badge">{{ open_alerts }}</em>{% endif %}
+      </a>
+      <a href="{{ url_for('main.incidents') }}" class="{% if request.endpoint == 'main.incidents' %}active{% endif %}">
+        <i class="fa-solid fa-triangle-exclamation"></i><span data-i18n="nav_incidents">الحوادث</span>
+      </a>
+      <a href="{{ url_for('main.reports') }}" class="{% if request.endpoint == 'main.reports' %}active{% endif %}">
+        <i class="fa-solid fa-chart-column"></i><span data-i18n="nav_reports">التقارير</span>
+      </a>
+      <a href="{{ url_for('main.users') }}" class="{% if request.endpoint == 'main.users' %}active{% endif %}">
+        <i class="fa-solid fa-user-shield"></i><span data-i18n="nav_personnel">أفراد الأمن</span>
+      </a>
+      <a href="{{ url_for('main.settings') }}" class="{% if request.endpoint == 'main.settings' %}active{% endif %}">
+        <i class="fa-solid fa-gear"></i><span data-i18n="nav_settings">الإعدادات</span>
+      </a>
+    </nav>
+
+    <div class="ops-side-status">
+      <i class="fa-solid fa-heart-pulse"></i>
+      <span data-i18n="nav_system_ok">النظام يعمل بشكل طبيعي</span>
+    </div>
+  </aside>
+
+  <div class="ops-content">
+    <header class="ops-topbar">
+      <div class="ops-search">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="search" data-i18n-placeholder="search_ph" placeholder="ابحث عن موقع، كاميرا، أو حادثة..." />
+      </div>
+      <div class="ops-datetime" id="ops-datetime">
+        <i class="fa-regular fa-calendar"></i>
+        <span>—</span>
+      </div>
+      <div class="lang-switch" role="group" aria-label="Language">
+        <button type="button" class="lang-btn" data-set-lang="ar" data-i18n="lang_ar">العربية</button>
+        <button type="button" class="lang-btn" data-set-lang="en" data-i18n="lang_en">English</button>
+      </div>
+      <div class="ops-top-actions">
+        <button class="ops-icon-btn" type="button" data-i18n-title="notifications" title="إشعارات">
+          <i class="fa-regular fa-bell"></i>
+          {% if open_alerts %}<em>{{ open_alerts }}</em>{% endif %}
+        </button>
+        <div class="ops-profile">
+          <img src="https://ui-avatars.com/api/?name={{ current_user.name|urlencode }}&background=1E3A5F&color=fff" alt="" />
+          <div>
+            <strong>{{ current_user.name }}</strong>
+            <small data-role-label="{{ current_user.role }}">
+              {% if current_user.role == 'admin' %}مدير النظام
+              {% elif current_user.role == 'manager' %}مشرف أمني
+              {% else %}ضابط ميدان{% endif %}
+            </small>
+          </div>
+          <a class="ops-logout" href="{{ url_for('auth.logout') }}" data-i18n-title="logout" title="خروج"><i class="fa-solid fa-right-from-bracket"></i></a>
+        </div>
+      </div>
+    </header>
+
+    <main class="ops-main">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{% block page_scripts %}{% endblock %}
+{% endblock %}
