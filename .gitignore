@@ -1,0 +1,39 @@
+# Python environments and generated files
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+*.egg-info/
+
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+.codex/
+.agents/
+.aws/
+.vscode/
+.idea/
+
+# Local databases, uploads, and generated personal reports
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+instance/
+uploads/
+output/
+tmp/
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.log
